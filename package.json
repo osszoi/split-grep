@@ -1,0 +1,19 @@
+{
+  "name": "split-grep",
+  "version": "1.0.0",
+  "description": "Split text by regex pattern and grep for matches",
+  "main": "sgrep.js",
+  "bin": {
+    "sgrep": "./sgrep.js"
+  },
+  "keywords": [
+    "split",
+    "grep",
+    "regex",
+    "filter",
+    "cli"
+  ],
+  "author": "Eduardo Lorenzo <ejlorenzo19@gmail.com>",
+  "license": "MIT",
+  "preferGlobal": true
+}
