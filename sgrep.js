@@ -51,37 +51,48 @@ async function main() {
             return;
         }
         
-        // Create regex object for splitting
-        const splitRegex = new RegExp(regex);
+        // Use split with capturing groups to preserve the delimiters
+        const splitRegex = new RegExp(`(${regex})`, 'gm');
+        const parts = input.split(splitRegex);
         
-        // Split the input by the regex
-        const items = input.split(splitRegex);
+        // Reconstruct segments by combining parts back together
+        const segments = [];
+        let currentSegment = '';
         
-        // Filter items that contain the search query (case insensitive)
-        const searchLower = searchQuery.toLowerCase();
-        const matchingItems = items.filter(item => 
-            item.toLowerCase().includes(searchLower)
-        );
-        
-        // Output matching items
-        // For items after the first split, we need to add back the split pattern
-        // (except for the first item which doesn't need it)
-        for (let i = 0; i < matchingItems.length; i++) {
-            const item = matchingItems[i];
-            // Add the split pattern back if this item was split
-            // (we need to check if this item was originally after a split)
-            if (item.trim()) {
-                // Find if this item needs the regex pattern prepended
-                const originalIndex = items.indexOf(item);
-                if (originalIndex > 0) {
-                    // Add back the pattern that was used to split
-                    const pattern = regex.replace(/\\n/g, '\n').replace(/\\\[/g, '[');
-                    console.log(pattern + item);
-                } else {
-                    console.log(item);
+        for (let i = 0; i < parts.length; i++) {
+            const part = parts[i];
+            
+            // Check if this part matches the split regex
+            const testRegex = new RegExp(regex, 'gm');
+            if (testRegex.test(part)) {
+                // This is a delimiter - start a new segment if we have content
+                if (currentSegment.trim()) {
+                    segments.push(currentSegment.trim());
                 }
+                // Start new segment with just the captured character (skip the \n)
+                const capturedChar = part.replace(/^\n/, '');
+                currentSegment = capturedChar;
+            } else {
+                // This is content - add to current segment
+                currentSegment += part;
             }
         }
+        
+        // Add the last segment
+        if (currentSegment.trim()) {
+            segments.push(currentSegment.trim());
+        }
+        
+        // Filter segments that contain the search query (case insensitive)
+        const searchLower = searchQuery.toLowerCase();
+        const matchingSegments = segments.filter(segment => 
+            segment.toLowerCase().includes(searchLower)
+        );
+        
+        // Output matching segments
+        matchingSegments.forEach(segment => {
+            console.log(segment);
+        });
         
     } catch (error) {
         console.error('Error:', error.message);

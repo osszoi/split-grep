@@ -1,10 +1,10 @@
 {
   "name": "split-grep",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Split text by regex pattern and grep for matches",
   "main": "sgrep.js",
   "bin": {
-    "sgrep": "./sgrep.js"
+    "sgrep": "sgrep.js"
   },
   "keywords": [
     "split",
